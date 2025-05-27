@@ -245,14 +245,14 @@ public class SequenceDiagram extends UmlDiagram {
 		this.ignoreNewpage = true;
 	}
 
-	private int autonewpage = -1;
+	// private int autonewpage = -1;
 
-	public final int getAutonewpage() {
-		return autonewpage;
-	}
+//	public final int getAutonewpage() {
+//		return autonewpage;
+//	}
 
 	public void setAutonewpage(int autonewpage) {
-		this.autonewpage = autonewpage;
+//		this.autonewpage = autonewpage;
 	}
 
 	public void divider(Display strings) {
@@ -485,6 +485,15 @@ public class SequenceDiagram extends UmlDiagram {
 
 	@Override
 	public int getNbImages() {
+		int old = getNbImagesOld();
+		System.err.println("old="+old);
+		return old;
+//		if (old!=1) throw new UnsupportedOperationException();
+//		if (old!=1) throw new UnsupportedOperationException();
+//		return 1;
+		
+	}
+	public int getNbImagesOld() {
 		// ::comment when __CORE__
 		try {
 			// The DEBUG StringBounder is ok just to compute the number of pages here.
