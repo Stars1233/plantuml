@@ -716,7 +716,7 @@ public class SvgGraphics {
 	public void svgPath(double x, double y, UPath path, double deltaShadow) {
 		manageShadow(deltaShadow);
 		ensureVisible(x, y);
-		final StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder(path.size() * 12);
 		for (USegment seg : path) {
 			final USegmentType type = seg.getSegmentType();
 			final double coord[] = seg.getCoord();
@@ -898,7 +898,7 @@ public class SvgGraphics {
 			final String pos = "<svg x=\"" + format(x) + "\" y=\"" + format(y) + "\">";
 			svg = pos + svg.substring(5);
 			final String key = "imagesvginlined" + image.getMD5Hex() + images.size();
-			final Element elt =  document.createElement(key);
+			final Element elt = document.createElement(key);
 			getG().appendChild(elt);
 			images.put(key, svg);
 		}
@@ -1055,11 +1055,12 @@ public class SvgGraphics {
 			this.target = target;
 		}
 
+		private static final Pattern p = Pattern.compile("\\<U\\+([0-9A-Fa-f]+)\\>");
+
 		String getXlinkTitle() {
 			if (title == null)
 				return url;
 
-			final Pattern p = Pattern.compile("\\<U\\+([0-9A-Fa-f]+)\\>");
 			final Matcher m = p.matcher(title);
 			final StringBuffer sb = new StringBuffer(); // Can't be switched to StringBuilder in order to support Java 8
 			while (m.find()) {

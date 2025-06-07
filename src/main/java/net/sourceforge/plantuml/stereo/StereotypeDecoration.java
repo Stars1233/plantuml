@@ -47,7 +47,6 @@ import net.sourceforge.plantuml.klimt.color.NoSuchColorException;
 import net.sourceforge.plantuml.klimt.creole.Parser;
 import net.sourceforge.plantuml.klimt.sprite.SpriteUtils;
 import net.sourceforge.plantuml.regex.Matcher2;
-import net.sourceforge.plantuml.regex.MyPattern;
 import net.sourceforge.plantuml.regex.Pattern2;
 import net.sourceforge.plantuml.regex.RegexComposed;
 import net.sourceforge.plantuml.regex.RegexConcat;
@@ -183,9 +182,10 @@ public class StereotypeDecoration {
 		return new StereotypeDecoration(label, htmlColor, character, spriteName, spriteScale);
 	}
 
+	private static final Pattern2 p = Pattern2.cmpile("\\<{2,3}.*?\\>{2,3}");
+
 	static List<String> cutLabels(final String label, Guillemet guillemet) {
 		final List<String> result = new ArrayList<>();
-		final Pattern2 p = MyPattern.cmpile("\\<{2,3}.*?\\>{2,3}");
 		final Matcher2 m = p.matcher(label);
 		while (m.find()) {
 			final String group = m.group();

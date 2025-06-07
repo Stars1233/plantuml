@@ -33,47 +33,30 @@
  * 
  *
  */
-package net.sourceforge.plantuml.klimt.creole.command;
+package net.sourceforge.plantuml;
 
-import net.sourceforge.plantuml.klimt.creole.legacy.StripeSimple;
-import net.sourceforge.plantuml.regex.Matcher2;
-import net.sourceforge.plantuml.regex.Pattern2;
-import net.sourceforge.plantuml.url.Url;
-import net.sourceforge.plantuml.url.UrlBuilder;
-import net.sourceforge.plantuml.url.UrlMode;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
-public class CommandCreoleUrl implements Command {
+public class Lazy<T> {
 
-	@Override
-	public String startingChars() {
-		return "[";
+	private final Supplier<T> supplier;
+	private T value;
+	private boolean initialized = false;
+
+	public Lazy(Supplier<T> supplier) {
+		this.supplier = supplier;
 	}
 
-	private static final Pattern2 pattern = Pattern2.cmpile("^(" + UrlBuilder.getRegexp() + ")");
-
-	public static Command create() {
-		return new CommandCreoleUrl();
+	public Lazy(Function<Void, T> function) {
+		this.supplier = () -> function.apply(null);
 	}
 
-	private CommandCreoleUrl() {
-	}
-
-	public int matchingSize(String line) {
-		final Matcher2 m = pattern.matcher(line);
-		if (m.find() == false)
-			return 0;
-
-		return m.group(1).length();
-	}
-
-	public String executeAndGetRemaining(String line, StripeSimple stripe) {
-		final Matcher2 m = pattern.matcher(line);
-		if (m.find() == false)
-			throw new IllegalStateException();
-
-		final UrlBuilder urlBuilder = new UrlBuilder(stripe.getSkinParam().getValue("topurl"), UrlMode.STRICT);
-		final Url url = urlBuilder.getUrl(m.group(1));
-		stripe.addUrl(url);
-		return line.substring(m.group(1).length());
+	public synchronized T get() {
+		if (initialized == false) {
+			value = supplier.get();
+			initialized = true;
+		}
+		return value;
 	}
 }

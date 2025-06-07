@@ -53,7 +53,6 @@ import net.sourceforge.plantuml.klimt.LineBreakStrategy;
 import net.sourceforge.plantuml.klimt.UStroke;
 import net.sourceforge.plantuml.klimt.color.HColor;
 import net.sourceforge.plantuml.klimt.color.NoSuchColorException;
-import net.sourceforge.plantuml.klimt.creole.legacy.CreoleParser;
 import net.sourceforge.plantuml.klimt.font.FontConfiguration;
 import net.sourceforge.plantuml.klimt.font.UFont;
 import net.sourceforge.plantuml.klimt.geom.HorizontalAlignment;
@@ -65,7 +64,6 @@ import net.sourceforge.plantuml.klimt.shape.TextBlockUtils;
 import net.sourceforge.plantuml.klimt.sprite.SpriteContainer;
 import net.sourceforge.plantuml.plasma.Quark;
 import net.sourceforge.plantuml.regex.Matcher2;
-import net.sourceforge.plantuml.regex.MyPattern;
 import net.sourceforge.plantuml.regex.Pattern2;
 import net.sourceforge.plantuml.sequencediagram.MessageNumber;
 import net.sourceforge.plantuml.skin.Pragma;
@@ -439,7 +437,7 @@ public class Display implements Iterable<CharSequence> {
 		return this;
 	}
 
-	public final static Pattern2 patternStereotype = MyPattern.cmpile("^(.*?)(\\<\\<\\s*(.*)\\s*\\>\\>)\\s*$");
+	public final static Pattern2 patternStereotype = Pattern2.cmpile("^(.*?)(\\<\\<\\s*(.*)\\s*\\>\\>)\\s*$");
 
 	public Stereotype getEndingStereotype() {
 		final Matcher2 m = patternStereotype.matcher(displayData.get(displayData.size() - 1));
@@ -458,8 +456,9 @@ public class Display implements Iterable<CharSequence> {
 				this.defaultCreoleMode);
 	}
 
+	private static final Pattern p = Pattern.compile("^([^:]+?)(\\s*:.+)$");
+
 	public Display underlinedName() {
-		final Pattern p = Pattern.compile("^([^:]+?)(\\s*:.+)$");
 		final List<CharSequence> result = new ArrayList<>();
 		for (CharSequence line : displayData) {
 			if (result.size() == 0) {

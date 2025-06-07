@@ -45,7 +45,6 @@ import java.util.regex.Pattern;
 import net.sourceforge.plantuml.asciiart.Wcwidth;
 import net.sourceforge.plantuml.klimt.creole.Display;
 import net.sourceforge.plantuml.regex.Matcher2;
-import net.sourceforge.plantuml.regex.MyPattern;
 import net.sourceforge.plantuml.regex.Pattern2;
 import net.sourceforge.plantuml.utils.Direction;
 import net.sourceforge.plantuml.utils.Log;
@@ -421,11 +420,12 @@ public class StringUtils {
 		return Integer.parseInt(uml.substring(x1, x2));
 	}
 
+	private final static Pattern2 SPLIT_COMMA = Pattern2.cmpile("([%pLN_.]+|[%g][^%g]+[%g])");
+
 	public static List<String> splitComma(String s) {
 		s = trin(s);
 		final List<String> result = new ArrayList<>();
-		final Pattern2 p = MyPattern.cmpile("([%pLN_.]+|[%g][^%g]+[%g])");
-		final Matcher2 m = p.matcher(s);
+		final Matcher2 m = SPLIT_COMMA.matcher(s);
 		while (m.find())
 			result.add(eventuallyRemoveStartingAndEndingDoubleQuote(m.group(0)));
 
@@ -462,9 +462,10 @@ public class StringUtils {
 		return sb.toString();
 	}
 
+	private static final Pattern UNICODE = Pattern.compile("\\<U\\+([0-9a-fA-F]{4,5})\\>");
+
 	public static String manageUnicodeNotationUplus(String s) {
-		final Pattern pattern = Pattern.compile("\\<U\\+([0-9a-fA-F]{4,5})\\>");
-		final Matcher matcher = pattern.matcher(s);
+		final Matcher matcher = UNICODE.matcher(s);
 		final StringBuffer result = new StringBuffer(); // Can't be switched to StringBuilder in order to support Java 8
 		while (matcher.find()) {
 			final String num = matcher.group(1);
@@ -476,9 +477,10 @@ public class StringUtils {
 		return result.toString();
 	}
 
+	private static final Pattern AMP_HASH = Pattern.compile("\\&#([0-9]+);");
+
 	public static String manageAmpDiese(String s) {
-		final Pattern pattern = Pattern.compile("\\&#([0-9]+);");
-		final Matcher matcher = pattern.matcher(s);
+		final Matcher matcher = AMP_HASH.matcher(s);
 		final StringBuffer result = new StringBuffer(); // Can't be switched to StringBuilder in order to support Java 8
 		while (matcher.find()) {
 			final int codePoint = Integer.parseInt(matcher.group(1));
